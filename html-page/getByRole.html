@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Playwright getByRole() — Widgets Only</title>
+<style>
+  :root {
+    --bg: #0f172a;       /* slate-900 */
+    --muted: #94a3b8;    /* slate-400 */
+    --text: #e5e7eb;     /* gray-200 */
+    --accent: #22d3ee;   /* cyan-400 */
+    --green: #34d399;    /* emerald-400 */
+    --red: #f87171;      /* red-400 */
+    --yellow: #fbbf24;   /* amber-400 */
+    --blue: #60a5fa;     /* blue-400 */
+    --purple: #c084fc;   /* violet-400 */
+  }
+  * { box-sizing: border-box; }
+  html, body { height:100%; }
+  body {
+    margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+    background: radial-gradient(1200px 800px at 90% -10%, rgba(34,211,238,.08), transparent 40%),
+                radial-gradient(1000px 700px at 10% 110%, rgba(192,132,252,.08), transparent 40%),
+                var(--bg);
+    color: var(--text);
+  }
+  header { padding:24px; text-align:center; }
+  header h1 { margin:0 0 6px; font-size:28px; }
+  header p { margin:0; color: var(--muted); }
+  .wrap { padding:24px; max-width:1200px; margin:0 auto; }
+  .card {
+    background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius:16px; padding:18px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.25);
+  }
+  .card h2 { margin:0 0 6px; font-size:20px; letter-spacing:.2px; }
+  .hint { color: var(--muted); font-size:13px; margin:0 0 12px; }
+  .grid { display:grid; gap:12px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .group { border:1px dashed rgba(255,255,255,.12); border-radius:12px; padding:12px; }
+  .group h3 { margin:0 0 8px; font-size:15px; color: var(--accent); }
+  .row { display:flex; gap:10px; align-items:center; margin:8px 0; flex-wrap:wrap; }
+  .btn, button[role="tab"], .fake {
+    border:1px solid rgba(255,255,255,.16);
+    background: rgba(255,255,255,.04);
+    color: var(--text);
+    padding:8px 12px; border-radius:10px; cursor:pointer;
+  }
+  .btn[disabled], [aria-disabled="true"] .btn { opacity:.55; cursor:not-allowed; }
+  .badge { font-size:12px; padding:2px 8px; border-radius:999px; border:1px solid rgba(255,255,255,.2); }
+  .ok { color: var(--green); border-color: rgba(52,211,153,.5); background: rgba(52,211,153,.08); }
+  .warn { color: var(--yellow); border-color: rgba(251,191,36,.5); background: rgba(251,191,36,.08); }
+  .danger { color: var(--red); border-color: rgba(248,113,113,.5); background: rgba(248,113,113,.08); }
+  .muted { color: var(--muted); }
+  .sr-only { position:absolute; left:-10000px; width:1px; height:1px; overflow:hidden; }
+  .hidden-phys { display:none; } /* physically hidden */
+  .pill { display:inline-block; padding:2px 10px; border-radius:999px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.14); font-size:12px; margin-left:6px; color:var(--muted);}
+  .tabbar { display:flex; gap:8px; }
+  .tabbar [role="tab"][aria-selected="true"] { outline:2px solid var(--blue); }
+  .fake[role="checkbox"][aria-checked="true"],
+  .btn[aria-pressed="true"] { outline:2px solid var(--green); }
+  .fake { user-select:none; }
+  .caption { font-size:12px; color: var(--muted); }
+</style>
+</head>
+<body>
+<header>
+  <h1>Playwright <span class="pill">getByRole()</span> — Widgets</h1>
+  <p class="hint">Click widgets to toggle ARIA state. Use DevTools → Accessibility pane to show role/name/state.</p>
+</header>
+
+<div class="wrap">
+  <section class="card">
+    <h2>Widgets</h2>
+    <p class="hint">Demonstrates options for <code>getByRole()</code>: <b>checked, disabled, exact, expanded, includeHidden, level, name, pressed, selected</b>.</p>
+
+    <div class="grid">
+
+      <!-- checked -->
+      <div class="group" id="grp-checked">
+        <h3>checked</h3>
+        <div class="row">
+          <label class="row" style="gap:8px;">
+            <input id="nativeCheck" type="checkbox" />
+            <span>Subscribe (native checkbox)</span>
+          </label>
+          <span class="badge ok">role="checkbox"</span>
+        </div>
+        <div class="row">
+          <div id="customCheck" role="checkbox" tabindex="0" aria-checked="false" class="fake">Custom checkbox</div>
+          <button class="btn" id="toggleCustomCheck">Toggle custom</button>
+        </div>
+        <div class="caption">Playwright locator example: <code>page.getByRole('checkbox', { name: /subscribe/i, checked: true })</code></div>
+      </div>
+
+      <!-- disabled -->
+      <div class="group" id="grp-disabled">
+        <h3>disabled</h3>
+        <div class="row">
+          <button class="btn" id="payNow" disabled>Pay now</button>
+          <span class="badge warn">native disabled</span>
+        </div>
+        <div class="row" aria-disabled="true" id="disabledZone">
+          <button class="btn">Action inside aria-disabled="true"</button>
+          <span class="badge warn">inherited</span>
+        </div>
+        <div class="caption">Example: <code>page.getByRole('button', { name: 'Pay now', disabled: true })</code></div>
+      </div>
+
+      <!-- exact + name -->
+      <div class="group" id="grp-exact">
+        <h3>exact + name</h3>
+        <div class="row">
+          <button class="btn">Save</button>
+          <button class="btn">Save draft</button>
+          <button class="btn">Save &amp; Publish</button>
+        </div>
+        <div class="row">
+          <label class="row"><input id="exactToggle" type="checkbox" /> <span>Use exact name match</span></label>
+          <span class="badge">name: "Save"</span>
+        </div>
+        <div class="caption">
+          Default (substring, case-insensitive): <code>page.getByRole('button', { name: 'save' })</code><br/>
+          Exact (case-sensitive, trims): <code>page.getByRole('button', { name: 'Save', exact: true })</code>
+        </div>
+      </div>
+
+      <!-- expanded -->
+      <div class="group" id="grp-expanded">
+        <h3>expanded</h3>
+        <button class="btn" id="menuBtn" aria-expanded="false" aria-controls="menuPanel">Menu</button>
+        <div id="menuPanel" class="group hidden-phys" role="region" aria-label="Menu panel">
+          <div class="row"><a href="#" role="link" class="btn">Profile</a><a href="#" role="link" class="btn">Settings</a></div>
+        </div>
+        <div class="caption">Example: <code>page.getByRole('button', { name: 'Menu', expanded: true })</code></div>
+      </div>
+
+      <!-- includeHidden -->
+      <div class="group" id="grp-hidden">
+        <h3>includeHidden</h3>
+        <div class="row">
+          <button class="btn" id="hideBtn">Hide the "Secret Action"</button>
+          <span class="badge danger">toggles visibility</span>
+        </div>
+        <div class="row">
+          <button class="btn" id="secretBtn">Secret Action</button>
+          <button class="btn hidden-phys" id="secretBtnHidden">Secret Action</button>
+          <span class="badge">two identical buttons; one is hidden</span>
+        </div>
+        <div class="caption">
+          Visible only: <code>page.getByRole('button', { name: 'Secret Action' })</code><br/>
+          Including hidden: <code>page.getByRole('button', { name: 'Secret Action', includeHidden: true })</code>
+        </div>
+      </div>
+
+      <!-- level (heading) -->
+      <div class="group" id="grp-level">
+        <h3>level (heading)</h3>
+        <h1>Dashboard</h1>
+        <h2>Reports</h2>
+        <div role="heading" aria-level="3">Custom Level 3 Heading</div>
+        <div class="caption">
+          <code>page.getByRole('heading', { level: 2, name: /reports/i })</code>
+        </div>
+      </div>
+
+      <!-- name sources -->
+      <div class="group" id="grp-name">
+        <h3>name (sources)</h3>
+        <div class="row">
+          <label for="userEmail">Email</label>
+          <input id="userEmail" type="email" placeholder="your@email.com" />
+          <span class="badge">label → name</span>
+        </div>
+        <div class="row">
+          <input id="searchBox" aria-label="Global Search" placeholder="Search..." />
+          <span class="badge">aria-label → name</span>
+        </div>
+        <div class="row">
+          <img src="https://dummyimage.com/80x40/222/aaa&text=Logo" alt="Brand Logo" />
+          <span class="badge">alt → name (role="img")</span>
+        </div>
+        <div class="caption">
+          Examples:<br/>
+          <code>page.getByRole('textbox', { name: 'Email' })</code><br/>
+          <code>page.getByRole('textbox', { name: /global search/i })</code><br/>
+          <code>page.getByRole('img', { name: 'Brand Logo' })</code>
+        </div>
+      </div>
+
+      <!-- pressed -->
+      <div class="group" id="grp-pressed">
+        <h3>pressed</h3>
+        <button class="btn" id="boldBtn" aria-pressed="false">Bold</button>
+        <button class="btn" id="italicBtn" aria-pressed="true">Italic</button>
+        <div class="caption">
+          <code>page.getByRole('button', { name: 'Bold', pressed: true })</code>
+        </div>
+      </div>
+
+      <!-- selected (tabs) -->
+      <div class="group" id="grp-selected" aria-label="Tabs">
+        <h3>selected (tabs)</h3>
+        <div class="tabbar" role="tablist" aria-label="Article sections">
+          <button role="tab" aria-selected="true"  class="btn">Overview</button>
+          <button role="tab" aria-selected="false" class="btn">Details</button>
+          <button role="tab" aria-selected="false" class="btn">Reviews</button>
+        </div>
+        <div class="caption">
+          <code>page.getByRole('tab', { name: 'Overview', selected: true })</code>
+        </div>
+      </div>
+
+    </div>
+  </section>
+</div>
+
+<script>
+  // Helpers
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+
+  // Elements
+  const customCheck = $('#customCheck');
+  const toggleCustomCheck = $('#toggleCustomCheck');
+
+  const menuBtn = $('#menuBtn');
+  const menuPanel = $('#menuPanel');
+
+  const hideBtn = $('#hideBtn');
+  const secretBtn = $('#secretBtn');
+  const secretBtnHidden = $('#secretBtnHidden');
+
+  const boldBtn = $('#boldBtn');
+  const italicBtn = $('#italicBtn');
+
+  const tabs = $$('#grp-selected [role="tab"]');
+
+  // Utilities
+  const toggleAriaBool = (el, attr) => {
+    const val = el.getAttribute(attr) === 'true';
+    el.setAttribute(attr, String(!val));
+  };
+
+  // Custom checkbox toggling
+  customCheck.addEventListener('click', () => { toggleAriaBool(customCheck, 'aria-checked'); });
+  customCheck.addEventListener('keydown', (e) => {
+    if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); toggleAriaBool(customCheck, 'aria-checked'); }
+  });
+  toggleCustomCheck.addEventListener('click', () => { toggleAriaBool(customCheck, 'aria-checked'); });
+
+  // Menu expanded
+  menuBtn.addEventListener('click', () => {
+    const now = menuBtn.getAttribute('aria-expanded') === 'true';
+    menuBtn.setAttribute('aria-expanded', String(!now));
+    menuPanel.classList.toggle('hidden-phys', now); // show when expanded
+  });
+
+  // Hide/Show secret button (simulate hidden DOM)
+  let hidden = false;
+  hideBtn.addEventListener('click', () => {
+    hidden = !hidden;
+    // keep one visible and one hidden with identical name
+    secretBtnHidden.classList.toggle('hidden-phys', !hidden);
+    secretBtn.classList.toggle('hidden-phys', hidden);
+    hideBtn.textContent = hidden ? 'Show the "Secret Action"' : 'Hide the "Secret Action"';
+  });
+
+  // Pressed buttons
+  [boldBtn, italicBtn].forEach(btn => {
+    btn.addEventListener('click', () => {
+      const now = btn.getAttribute('aria-pressed') === 'true';
+      btn.setAttribute('aria-pressed', String(!now));
+    });
+  });
+
+  // Tabs selected
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.setAttribute('aria-selected','false'));
+      tab.setAttribute('aria-selected','true');
+    });
+  });
+
+  // Initial state
+  secretBtnHidden.classList.add('hidden-phys');
+</script>
+</body>
+</html>

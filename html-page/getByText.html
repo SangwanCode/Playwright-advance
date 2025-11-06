@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Playwright getByText – Minimal Demo (Unique Texts)</title>
+  <style>
+    :root { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans"; }
+    body { margin: 0; background:#0b1220; color:#e8eefc; }
+    header { padding: 20px 24px; border-bottom: 1px solid #223154; background: linear-gradient(120deg,#0b1220,#162448); }
+    h1 { margin: 0 0 6px; font-size: 22px; }
+    p.lead { margin: 0; color:#b6c6ff }
+    main { padding: 24px; display:grid; gap: 16px; grid-template-columns: repeat(auto-fit,minmax(320px,1fr)); }
+    section { background:#0f1832; border:1px solid #223154; border-radius:14px; padding:14px; box-shadow: 0 10px 20px rgba(0,0,0,.15); }
+    section h2 { margin: 0 0 10px; font-size: 16px; color:#b8d1ff }
+    .row { display:flex; flex-wrap:wrap; gap:10px; align-items:center; }
+    .btn { border:1px solid #2a3b66; background:#172448; color:#e8eefc; padding:8px 12px; border-radius:10px; cursor:pointer }
+    .muted { color:#9fb0de; font-size: 14px; }
+    .card { background:#0c1430; border:1px dashed #2a3b66; border-radius:10px; padding:10px; }
+    .box { padding:10px; border-radius:10px; background:#0c1530; border:1px solid #22315a; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Playwright <code>getByText()</code> – Minimal 4-Scenario Demo</h1>
+    <p class="lead">Each example has unique final text so finding them returns exactly one element.</p>
+  </header>
+
+  <main>
+    <!-- 1) Basic / Substring / Exact -->
+    <section id="basic">
+      <h2>1) Basic / Substring / Exact</h2>
+      <div class="row">
+        <button class="btn" id="btn-sign">Sign</button>
+        <button class="btn" id="btn-sign-in">Sign in</button>
+        <button class="btn" id="btn-sign-up">Sign up</button>
+        <button class="btn" id="btn-assign">Assign</button>
+      </div>
+      <p class="muted">These buttons share similar words but differ in exact text.</p>
+    </section>
+
+    <!-- 2) Whitespace normalization (unique normalized strings) -->
+    <section id="whitespace">
+      <h2>2) Whitespace Normalization</h2>
+      <div class="card">
+        <p id="ws-a">Alpha      One</p>
+        <p id="ws-b">Beta<br />    Two</p>
+        <p id="ws-c">   Gamma   Three   </p>
+      </div>
+      <p class="muted">Although spacing differs, the normalized visible text is unique for each line.</p>
+    </section>
+
+    <!-- 3) Nested / split nodes (unique sentence) -->
+    <section id="nested">
+      <h2>3) Nested Elements & Split Text Nodes</h2>
+      <div class="box">
+        <p>
+          Locate this <em>complex</em> sentence with <strong>inline</strong> parts.
+        </p>
+      </div>
+      <p class="muted">The full sentence is formed by joining words across inline elements.</p>
+    </section>
+
+    <!-- 4) Text split across many tags (unique phrase) -->
+    <section id="join">
+      <h2>4) Text Split Across Many Tags</h2>
+      <div class="box" aria-label="Joined text container">
+        <span>Jo</span><span>in</span><span>ed</span>
+        <span>&nbsp;</span>
+        <span>Tex</span><span>t</span>
+        <span>&nbsp;</span>
+        <span>De</span><span>mo</span>
+      </div>
+      <p class="muted">Here the phrase is broken into many tags but visually appears as one string.</p>
+    </section>
+  </main>
+</body>
+</html>

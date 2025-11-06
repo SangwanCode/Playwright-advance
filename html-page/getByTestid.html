@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Playwright getByTestId() Demo – Custom Attribute</title>
+  <style>
+    body { font-family: sans-serif; background:#0b1220; color:#e8eefc; padding:20px; }
+    section { margin-bottom: 20px; padding:14px; border:1px solid #223154; border-radius:10px; background:#162448; }
+    h2 { margin-top:0; color:#b8d1ff; font-size: 18px; }
+    button { margin:6px; padding:8px 12px; border-radius:6px; border:1px solid #334477; background:#24396e; color:white; cursor:pointer; }
+    .icon-btn { font-size:20px; border-radius:50%; width:40px; height:40px; text-align:center; }
+    .note { color:#9fb0de; font-size:14px; margin-top:6px; }
+  </style>
+</head>
+<body>
+  <h1>Playwright <code>getByTestId()</code> Demo with Custom Attribute</h1>
+  <p class="note">
+    Each button has both <code>data-testid</code> (default) and <code>data-pw</code> (custom).  
+    You can configure Playwright to use <code>data-pw</code> via <code>selectors.setTestIdAttribute('data-pw')</code>.
+  </p>
+
+  <!-- 1. Two buttons with same text -->
+  <section>
+    <h2>1) Two buttons with the same text</h2>
+    <button data-testid="save-top" data-pw="save-top1">Save</button>
+    <button data-testid="save-bottom" data-pw="save-bottom">Save</button>
+    <p class="note">
+      Text is the same, but test ids are unique (<code>save-top</code>, <code>save-bottom</code>) 
+      in both <code>data-testid</code> and <code>data-pw</code>.
+    </p>
+  </section>
+
+  <!-- 2. Text may change but test id stays -->
+  <section>
+    <h2>2) Text may change, test id stays stable</h2>
+    <button data-testid="directions" data-pw="directions">Itinéraire</button>
+    <p class="note">
+      If text changes (e.g. "Directions"), both test ids (<code>data-testid</code> and <code>data-pw</code>) remain stable.
+    </p>
+  </section>
+
+  <!-- 3. Icon button with no text -->
+  <section>
+    <h2>3) Icon button with no visible text</h2>
+    <button class="icon-btn" data-testid="settings" data-pw="settings">⚙️</button>
+    <p class="note">
+      Icon-only button → No label/text. Test ids (<code>settings</code>) are the only reliable way to locate it.
+    </p>
+  </section>
+</body>
+</html>

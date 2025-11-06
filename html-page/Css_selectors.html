@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>CSS Selectors Practice – Playwright</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    body { font-family: system-ui, Arial, sans-serif; margin: 24px; line-height: 1.5; }
+    header, section { margin-bottom: 28px; }
+    .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .card { border: 1px solid #ddd; border-radius: 10px; padding: 12px; }
+    .tag { display: inline-block; padding: 2px 8px; border-radius: 12px; background: #eef; margin-right: 6px; font-size: 12px; }
+    .hidden { display: none; }
+    .muted { color: #777; }
+    table { border-collapse: collapse; width: 100%; }
+    th, td { border: 1px solid #ccc; padding: 6px 8px; text-align: left; }
+    .row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+    small.code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; background: #f6f8fa; padding: 2px 6px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1 id="title">CSS Selectors Practice</h1>
+    <p class="muted">Use Playwright CSS selectors to locate elements. </p>
+   
+  </header>
+
+  <section class="grid">
+    <div class="card" id="profile" data-role="user">
+      <h2>Profile</h2>
+      <p class="muted">Find by ID, class, and attributes.</p>
+      <div class="row">
+        <span class="tag" data-testid="role-user">user</span>
+        <span class="tag" data-testid="status-active">active</span>
+        <span class="tag" data-testid="tier-free">free</span>
+      </div>
+      <p>
+        <a href="https://example.com/help/guide">Help Guide</a> ·
+        <a href="http://intranet.local/docs/handbook.pdf">Team Handbook (PDF)</a> ·
+        <a href="/about">About</a>
+      </p>
+      <div class="row">
+      <a class="btn tag primary" href="https://learn.example.com/start">Start</a>
+      <a class="btn tag" href="https://secure.example.com/pay">Pay</a>
+      <a class="btn" href="/support/help-center">Help Center</a>
+      <a class="btn" href="/files/guide.pdf">Download PDF</a>
+    </div>
+    </div>
+	
+
+    <div class="card" id="admin" data-role="admin" lang="en-US">
+      <h2>Admin</h2>
+      
+      <div class="row">
+        <button data-testid="add-user">Add User</button>
+        <button data-testid="buy-now">Buy Now</button>
+        <button class="muted" disabled data-testid="disabled-btn">Disabled Btn</button>
+      </div>
+      <div class="row">
+        <input type="email" placeholder="email (required & valid)" required />
+        <input type="text" placeholder="optional text" />
+        <label><input type="checkbox" name="agree" checked /> I agree</label>
+        <label><input type="radio" name="plan" value="basic" checked /> Basic</label>
+        <label><input type="radio" name="plan" value="pro" /> Pro</label>
+      </div>
+     
+    </div>
+  </section>
+
+  <section class="card">
+    <h2>Products</h2>
+    <p>Practice list selectors</p>
+    <ul class="products">
+      <li class="product" data-category="books" data-tags="paperback new">
+        <span class="name">Clean Code</span> –
+        <span class="price" data-currency="USD">$25</span>
+      </li>
+      <li class="product featured" data-category="books" data-tags="hardcover sale">
+        <span class="name">Pragmatic Programmer</span> –
+        <span class="price" data-currency="USD">$30</span>
+      </li>
+      <li class="product" data-category="hardware" data-tags="sale new">
+        <span class="name">Mechanical Keyboard</span> –
+        <span class="price" data-currency="EUR">€99</span>
+      </li>
+      <li class="product" data-category="software" data-tags="download">
+        <span class="name">Code Editor Pro</span> –
+        <span class="price" data-currency="INR">₹1499</span>
+      </li>
+    </ul>
+   
+  </section>
+
+  <section class="grid">
+    <div class="card">
+      <h2>Nesting & Direct Children</h2>
+      <div class="nest">
+        <ul id="chapters">
+          <li>
+            <span>Chapter 1</span>
+            <ul>
+              <li><span>1.1 Intro</span></li>
+              <li><span>1.2 Basics</span></li>
+            </ul>
+          </li>
+          <li>
+            <span>Chapter 2</span>
+            <ul>
+              <li><span>2.1 Setup</span></li>
+              <li><span>2.2 Advanced</span></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+   
+    </div>
+
+  <section class="card">
+    <h2>Cards </h2>
+    <div class="cards">
+      <div class="card mini">
+        <h3>Card A</h3>
+        <button>Action</button>
+      </div>
+      <div class="card mini">
+        <h3>Card B</h3>
+        <span>No button here</span>
+      </div>
+      <div class="card mini">
+        <h3>Card C</h3>
+        <button>Do</button>
+      </div>
+    </div>
+
+  </section>
+  
+</body>
+</html>

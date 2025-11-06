@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Playwright getByLabel() – Demo</title>
+  <style>
+    body { font-family: sans-serif; background:#0b1220; color:#e8eefc; padding:20px; }
+    section { margin-bottom: 20px; padding:14px; border:1px solid #223154; border-radius:10px; background:#162448; }
+    h2 { margin-top:0; color:#b8d1ff; font-size: 18px; }
+    label { display:block; margin:8px 0; }
+    input { padding:6px 8px; border-radius:6px; border:1px solid #334477; }
+    .note { color:#9fb0de; font-size:14px; margin-top:6px; }
+  </style>
+</head>
+<body>
+  <h1>Playwright <code>getByLabel()</code> Demo</h1>
+  <p class="note">Examples of inputs linked to labels in different ways.</p>
+
+  <!-- 1. Input INSIDE the label -->
+  <section id="inside">
+    <h2>1) Input inside the label</h2>
+    <form>
+      <label>
+        First Name
+        <input type="text" name="firstName" />
+      </label>
+      <label>
+        Subscribe to newsletter
+        <input type="checkbox" name="subscribe" />
+      </label>
+    </form>
+    <p class="note">Here the text and input are wrapped together inside one &lt;label&gt;.</p>
+  </section>
+
+  <!-- 2. Input OUTSIDE the label (connected with for + id) -->
+  <section id="outside">
+    <h2>2) Input outside with "for" and "id"</h2>
+    <form>
+      <label for="email">Email Address</label>
+      <input id="email" type="email" name="email" />
+
+      <label for="password">Password</label>
+      <input id="password" type="password" name="password" />
+    </form>
+    <p class="note">Here labels use the <code>for</code> attribute, pointing to input <code>id</code>.</p>
+  </section>
+
+  <!-- 3. Input WITHOUT label (bad practice) -->
+  <section id="nolabel">
+    <h2>3) Input without label (not accessible)</h2>
+    <form>
+      <input type="text" placeholder="Enter something…" name="unlabeled" />
+    </form>
+    <p class="note">This input has no label. <code>getByLabel()</code> won’t work here.</p>
+  </section>
+
+</body>
+</html>
